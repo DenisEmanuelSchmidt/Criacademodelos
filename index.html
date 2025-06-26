@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API de Dados de Login - Documentação</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            margin-bottom: 30px;
+            border-radius: 10px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .section {
+            background: white;
+            margin-bottom: 30px;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .endpoint {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .method {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 3px;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 0.9em;
+        }
+
+        .get { background-color: #28a745; }
+        .post { background-color: #007bff; }
+        .delete { background-color: #dc3545; }
+
+        .url {
+            font-family: 'Courier New', monospace;
+            background: #e9ecef;
+            padding: 5px 10px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        .description {
+            margin-top: 10px;
+            color: #666;
+        }
+
+        .example {
+            background: #f1f3f4;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+        }
+
+        .test-section {
+            background: #e8f5e8;
+            border: 1px solid #28a745;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .test-button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 1em;
+        }
+
+        .test-button:hover {
+            background: #218838;
+        }
+
+        .result {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-online { background-color: #28a745; }
+        .status-offline { background-color: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>API de Dados de Login</h1>
+            <p>Documentação e testes dos endpoints para gerenciar dados de login</p>
+            <div style="margin-top: 20px;">
+                <span class="status-indicator" id="status-indicator"></span>
+                <span id="status-text">Verificando status...</span>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Visão Geral</h2>
+            <p>Esta API permite gerenciar dados de login salvos no localStorage do navegador. Você pode salvar, consultar, sincronizar e verificar credenciais de login através dos endpoints disponíveis.</p>
+            
+            <h3 style="margin-top: 20px;">Base URL</h3>
+            <div class="url" id="base-url">http://localhost:8000/api</div>
+        </div>
+
+        <div class="section">
+            <h2>Endpoints Disponíveis</h2>
+
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="url">/login-data</span>
+                <div class="description">Retorna todos os dados de login salvos</div>
+                <div class="example">
+Resposta:
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "email": "usuario@exemplo.com",
+      "created_at": "2025-06-26T19:45:00",
+      "last_login": "2025-06-26T19:45:00"
+    }
+  ],
+  "count": 1
+}
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <span class="method get">GET</span>
+                <span class="url">/login-data/{email}</span>
+                <div class="description">Retorna dados de login por email específico</div>
+                <div class="example">
+Resposta:
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "email": "usuario@exemplo.com",
+    "created_at": "2025-06-26T19:45:00",
+    "last_login": "2025-06-26T19:45:00"
+  }
+}
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="url">/login-data</span>
+                <div class="description">Salva ou atualiza dados de login</div>
+                <div class="example">
+Requisição:
+{
+  "email": "usuario@exemplo.com",
+  "password": "minhasenha123"
+}
+
+Resposta:
+{
+  "success": true,
+  "message": "Dados salvos com sucesso",
+  "data": {
+    "id": 1,
+    "email": "usuario@exemplo.com",
+    "created_at": "2025-06-26T19:45:00",
+    "last_login": "2025-06-26T19:45:00"
+  }
+}
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="url">/login-data/sync</span>
+                <div class="description">Sincroniza dados do localStorage com o banco de dados</div>
+                <div class="example">
+Requisição:
+{
+  "users": {
+    "usuario1@exemplo.com": {
+      "password": "senha123",
+      "createdAt": "2025-06-26T19:45:00.000Z",
+      "lastLogin": "2025-06-26T19:45:00.000Z"
+    }
+  }
+}
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <span class="method post">POST</span>
+                <span class="url">/login-data/verify</span>
+                <div class="description">Verifica credenciais de login</div>
+                <div class="example">
+Requisição:
+{
+  "email": "usuario@exemplo.com",
+  "password": "minhasenha123"
+}
+
+Resposta:
+{
+  "success": true,
+  "message": "Login válido",
+  "data": {
+    "id": 1,
+    "email": "usuario@exemplo.com",
+    "created_at": "2025-06-26T19:45:00",
+    "last_login": "2025-06-26T19:45:00"
+  }
+}
+                </div>
+            </div>
+
+            <div class="endpoint">
+                <span class="method delete">DELETE</span>
+                <span class="url">/login-data/{email}</span>
+                <div class="description">Remove dados de login por email</div>
+            </div>
+
+            <div class="endpoint">
+                <span class="method delete">DELETE</span>
+                <span class="url">/login-data/clear</span>
+                <div class="description">Remove todos os dados de login</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Testes da API</h2>
+            <div class="test-section">
+                <h3>Testar Endpoints</h3>
+                <p>Use os botões abaixo para testar os endpoints da API:</p>
+                
+                <button class="test-button" onclick="testGetAllData()">GET - Todos os dados</button>
+                <button class="test-button" onclick="testSaveData()">POST - Salvar dados de teste</button>
+                <button class="test-button" onclick="testVerifyLogin()">POST - Verificar login</button>
+                <button class="test-button" onclick="testSyncData()">POST - Sincronizar dados</button>
+                <button class="test-button" onclick="testClearData()">DELETE - Limpar todos os dados</button>
+                
+                <div id="test-result" class="result" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const baseUrl = 'http://localhost:8000/api';
+        
+        // Verificar status da API
+        async function checkApiStatus() {
+            try {
+                const response = await fetch(`${baseUrl}/login-data`);
+                const statusIndicator = document.getElementById('status-indicator');
+                const statusText = document.getElementById('status-text');
+                
+                if (response.ok) {
+                    statusIndicator.className = 'status-indicator status-online';
+                    statusText.textContent = 'API Online';
+                } else {
+                    statusIndicator.className = 'status-indicator status-offline';
+                    statusText.textContent = 'API Offline';
+                }
+            } catch (error) {
+                const statusIndicator = document.getElementById('status-indicator');
+                const statusText = document.getElementById('status-text');
+                statusIndicator.className = 'status-indicator status-offline';
+                statusText.textContent = 'API Offline';
+            }
+        }
+
+        function showResult(result) {
+            const resultDiv = document.getElementById('test-result');
+            resultDiv.style.display = 'block';
+            resultDiv.textContent = JSON.stringify(result, null, 2);
+        }
+
+        async function testGetAllData() {
+            try {
+                const response = await fetch(`${baseUrl}/login-data`);
+                const data = await response.json();
+                showResult(data);
+            } catch (error) {
+                showResult({ error: error.message });
+            }
+        }
+
+        async function testSaveData() {
+            try {
+                const testData = {
+                    email: 'teste@exemplo.com',
+                    password: 'senha123'
+                };
+                
+                const response = await fetch(`${baseUrl}/login-data`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testData)
+                });
+                
+                const data = await response.json();
+                showResult(data);
+            } catch (error) {
+                showResult({ error: error.message });
+            }
+        }
+
+        async function testVerifyLogin() {
+            try {
+                const testData = {
+                    email: 'teste@exemplo.com',
+                    password: 'senha123'
+                };
+                
+                const response = await fetch(`${baseUrl}/login-data/verify`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testData)
+                });
+                
+                const data = await response.json();
+                showResult(data);
+            } catch (error) {
+                showResult({ error: error.message });
+            }
+        }
+
+        async function testSyncData() {
+            try {
+                const testData = {
+                    users: {
+                        'sync@exemplo.com': {
+                            password: 'senhasync123',
+                            createdAt: new Date().toISOString(),
+                            lastLogin: new Date().toISOString()
+                        }
+                    }
+                };
+                
+                const response = await fetch(`${baseUrl}/login-data/sync`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testData)
+                });
+                
+                const data = await response.json();
+                showResult(data);
+            } catch (error) {
+                showResult({ error: error.message });
+            }
+        }
+
+        async function testClearData() {
+            if (confirm('Tem certeza que deseja limpar todos os dados?')) {
+                try {
+                    const response = await fetch(`${baseUrl}/login-data/clear`, {
+                        method: 'DELETE'
+                    });
+                    
+                    const data = await response.json();
+                    showResult(data);
+                } catch (error) {
+                    showResult({ error: error.message });
+                }
+            }
+        }
+
+        // Verificar status ao carregar a página
+        checkApiStatus();
+        
+        // Verificar status a cada 30 segundos
+        setInterval(checkApiStatus, 30000);
+    </script>
+</body>
+</html>
+
