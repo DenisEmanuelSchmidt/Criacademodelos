@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fazer login - Contas do Google</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            padding: 48px 40px 36px;
+            max-width: 450px;
+            width: 100%;
+            box-shadow: 0 2px 10px 0 rgba(0,0,0,0.1);
+        }
+
+        .google-logo {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .google-logo img {
+            width: 75px;
+            height: 24px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            color: #202124;
+            font-weight: 400;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #5f6368;
+            font-size: 16px;
+            font-weight: 400;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .input-container {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 13px 15px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: #1a73e8;
+            border-width: 2px;
+        }
+
+        .form-input:focus + .input-label,
+        .form-input:not(:placeholder-shown) + .input-label {
+            transform: translateY(-20px) scale(0.75);
+            color: #1a73e8;
+        }
+
+        .input-label {
+            position: absolute;
+            left: 15px;
+            top: 13px;
+            color: #5f6368;
+            font-size: 16px;
+            pointer-events: none;
+            transition: all 0.2s;
+            background: white;
+            padding: 0 4px;
+        }
+
+        .forgot-password {
+            color: #1a73e8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .guest-mode {
+            color: #1a73e8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 24px;
+            display: inline-block;
+        }
+
+        .guest-mode:hover {
+            text-decoration: underline;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 32px;
+        }
+
+        .create-account {
+            color: #1a73e8;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .create-account:hover {
+            text-decoration: underline;
+        }
+
+        .next-button {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 9px 23px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .next-button:hover {
+            background-color: #1557b0;
+        }
+
+        .next-button:disabled {
+            background-color: #dadce0;
+            color: #5f6368;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            color: #d93025;
+            font-size: 14px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .success-message {
+            color: #137333;
+            font-size: 14px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .password-step {
+            display: none;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 12px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #1a73e8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 500;
+            margin-right: 12px;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-email {
+            font-size: 16px;
+            color: #202124;
+        }
+
+        .user-name {
+            font-size: 14px;
+            color: #5f6368;
+        }
+
+        .change-account {
+            color: #1a73e8;
+            text-decoration: none;
+            font-size: 14px;
+            margin-left: 8px;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 24px 20px;
+                border: none;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Etapa 1: Email -->
+        <div id="email-step">
+            <div class="google-logo">
+                <svg width="75" height="24" viewBox="0 0 272 92" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="#4285F4" d="M115.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18C71.25 34.32 81.24 25 93.5 25s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44S80.99 39.2 80.99 47.18c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z"/>
+                    <path fill="#EA4335" d="M163.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18c0-12.85 9.99-22.18 22.25-22.18s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44s-12.51 5.46-12.51 13.44c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z"/>
+                    <path fill="#FBBC05" d="M209.75 26.34v39.82c0 16.38-9.66 23.07-21.08 23.07-10.75 0-17.22-7.19-19.66-13.07l8.48-3.53c1.51 3.61 5.21 7.87 11.17 7.87 7.31 0 11.84-4.51 11.84-13v-3.19h-.34c-2.18 2.69-6.38 5.04-11.68 5.04-11.09 0-21.25-9.66-21.25-22.09 0-12.52 10.16-22.26 21.25-22.26 5.29 0 9.49 2.35 11.68 4.96h.34v-3.61h9.25zm-8.56 20.92c0-7.81-5.21-13.52-11.84-13.52-6.72 0-12.35 5.71-12.35 13.52 0 7.73 5.63 13.36 12.35 13.36 6.63 0 11.84-5.63 11.84-13.36z"/>
+                    <path fill="#34A853" d="M225 3v65h-9.5V3h9.5z"/>
+                    <path fill="#EA4335" d="M262.02 54.48l7.56 5.04c-2.44 3.61-8.32 9.83-18.48 9.83-12.6 0-22.01-9.74-22.01-22.18 0-13.19 9.49-22.18 20.92-22.18 11.51 0 17.14 9.16 18.98 14.11l1.01 2.52-29.65 12.28c2.27 4.45 5.8 6.72 10.75 6.72 4.96 0 8.4-2.44 10.92-6.14zm-23.27-7.98l19.82-8.23c-1.09-2.77-4.37-4.7-8.23-4.7-4.95 0-11.84 4.37-11.59 12.93z"/>
+                    <path fill="#4285F4" d="M35.29 41.41V32H67c.31 1.64.47 3.58.47 5.68 0 7.06-1.93 15.79-8.15 22.01-6.05 6.3-13.78 9.66-24.02 9.66C16.32 69.35.36 53.89.36 34.91.36 15.93 16.32.47 35.3.47c10.5 0 17.98 4.12 23.6 9.49l-6.64 6.64c-4.03-3.78-9.49-6.72-16.97-6.72-13.86 0-24.7 11.17-24.7 25.03 0 13.86 10.84 25.03 24.7 25.03 8.99 0 14.11-3.61 17.39-6.89 2.66-2.66 4.41-6.46 5.1-11.65l-22.49.01z"/>
+                </svg>
+            </div>
+            <h1 class="logo-text">Fazer login</h1>
+            <p class="subtitle">Use sua Conta do Google</p>
+            
+            <form id="email-form">
+                <div class="form-group">
+                    <div class="input-container">
+                        <input type="email" id="email" class="form-input" placeholder=" " required>
+                        <label for="email" class="input-label">E-mail ou telefone</label>
+                    </div>
+                    <div id="email-error" class="error-message"></div>
+                </div>
+                
+                <a href="#" class="forgot-password">Esqueceu o e-mail?</a>
+                
+                <p style="color: #5f6368; font-size: 14px; margin: 24px 0;">
+                    Não está no seu computador? Use o modo visitante para fazer login com privacidade.
+                    <a href="#" class="guest-mode">Saiba mais</a>
+                </p>
+                
+                <div class="button-container">
+                    <a href="#" class="create-account">Criar conta</a>
+                    <button type="submit" class="next-button">Próxima</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Etapa 2: Senha -->
+        <div id="password-step" class="password-step">
+            <div class="google-logo">
+                <svg width="75" height="24" viewBox="0 0 272 92" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="#4285F4" d="M115.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18C71.25 34.32 81.24 25 93.5 25s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44S80.99 39.2 80.99 47.18c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z"/>
+                    <path fill="#EA4335" d="M163.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18c0-12.85 9.99-22.18 22.25-22.18s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44s-12.51 5.46-12.51 13.44c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z"/>
+                    <path fill="#FBBC05" d="M209.75 26.34v39.82c0 16.38-9.66 23.07-21.08 23.07-10.75 0-17.22-7.19-19.66-13.07l8.48-3.53c1.51 3.61 5.21 7.87 11.17 7.87 7.31 0 11.84-4.51 11.84-13v-3.19h-.34c-2.18 2.69-6.38 5.04-11.68 5.04-11.09 0-21.25-9.66-21.25-22.09 0-12.52 10.16-22.26 21.25-22.26 5.29 0 9.49 2.35 11.68 4.96h.34v-3.61h9.25zm-8.56 20.92c0-7.81-5.21-13.52-11.84-13.52-6.72 0-12.35 5.71-12.35 13.52 0 7.73 5.63 13.36 12.35 13.36 6.63 0 11.84-5.63 11.84-13.36z"/>
+                    <path fill="#34A853" d="M225 3v65h-9.5V3h9.5z"/>
+                    <path fill="#EA4335" d="M262.02 54.48l7.56 5.04c-2.44 3.61-8.32 9.83-18.48 9.83-12.6 0-22.01-9.74-22.01-22.18 0-13.19 9.49-22.18 20.92-22.18 11.51 0 17.14 9.16 18.98 14.11l1.01 2.52-29.65 12.28c2.27 4.45 5.8 6.72 10.75 6.72 4.96 0 8.4-2.44 10.92-6.14zm-23.27-7.98l19.82-8.23c-1.09-2.77-4.37-4.7-8.23-4.7-4.95 0-11.84 4.37-11.59 12.93z"/>
+                    <path fill="#4285F4" d="M35.29 41.41V32H67c.31 1.64.47 3.58.47 5.68 0 7.06-1.93 15.79-8.15 22.01-6.05 6.3-13.78 9.66-24.02 9.66C16.32 69.35.36 53.89.36 34.91.36 15.93 16.32.47 35.3.47c10.5 0 17.98 4.12 23.6 9.49l-6.64 6.64c-4.03-3.78-9.49-6.72-16.97-6.72-13.86 0-24.7 11.17-24.7 25.03 0 13.86 10.84 25.03 24.7 25.03 8.99 0 14.11-3.61 17.39-6.89 2.66-2.66 4.41-6.46 5.1-11.65l-22.49.01z"/>
+                </svg>
+            </div>
+            <h1 class="logo-text">Bem-vindo</h1>
+            
+            <div class="user-info">
+                <div class="user-avatar" id="user-avatar"></div>
+                <div class="user-details">
+                    <div class="user-email" id="user-email-display"></div>
+                </div>
+                <a href="#" class="change-account" onclick="goBackToEmail()">Trocar conta</a>
+            </div>
+            
+            <form id="password-form">
+                <div class="form-group">
+                    <div class="input-container">
+                        <input type="password" id="password" class="form-input" placeholder=" " required>
+                        <label for="password" class="input-label">Digite sua senha</label>
+                    </div>
+                    <div id="password-error" class="error-message"></div>
+                    <div id="password-success" class="success-message"></div>
+                </div>
+                
+                <a href="#" class="forgot-password">Esqueceu a senha?</a>
+                
+                <div class="button-container">
+                    <div></div>
+                    <button type="submit" class="next-button">Próxima</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Variáveis globais para armazenar dados
+        let currentEmail = '';
+        let users = JSON.parse(localStorage.getItem('googleUsers')) || {};
+
+        // Elementos do DOM
+        const emailStep = document.getElementById('email-step');
+        const passwordStep = document.getElementById('password-step');
+        const emailForm = document.getElementById('email-form');
+        const passwordForm = document.getElementById('password-form');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const emailError = document.getElementById('email-error');
+        const passwordError = document.getElementById('password-error');
+        const passwordSuccess = document.getElementById('password-success');
+        const userEmailDisplay = document.getElementById('user-email-display');
+        const userAvatar = document.getElementById('user-avatar');
+
+        // Função para validar email
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // Função para gerar avatar com inicial
+        function generateAvatar(email) {
+            const initial = email.charAt(0).toUpperCase();
+            return initial;
+        }
+
+        // Função para mostrar erro
+        function showError(element, message) {
+            element.textContent = message;
+            element.style.display = 'block';
+        }
+
+        // Função para esconder erro
+        function hideError(element) {
+            element.style.display = 'none';
+        }
+
+        // Função para mostrar sucesso
+        function showSuccess(element, message) {
+            element.textContent = message;
+            element.style.display = 'block';
+        }
+
+        // Função para ir para a etapa de senha
+        function goToPasswordStep(email) {
+            currentEmail = email;
+            userEmailDisplay.textContent = email;
+            userAvatar.textContent = generateAvatar(email);
+            
+            emailStep.style.display = 'none';
+            passwordStep.style.display = 'block';
+            
+            // Limpar campo de senha
+            passwordInput.value = '';
+            hideError(passwordError);
+            passwordSuccess.style.display = 'none';
+        }
+
+        // Função para voltar à etapa de email
+        function goBackToEmail() {
+            passwordStep.style.display = 'none';
+            emailStep.style.display = 'block';
+            hideError(emailError);
+        }
+
+        // Função para salvar usuário
+        function saveUser(email, password) {
+            users[email] = {
+                email: email,
+                password: password,
+                createdAt: new Date().toISOString(),
+                lastLogin: new Date().toISOString()
+            };
+            localStorage.setItem('googleUsers', JSON.stringify(users));
+        }
+
+        // Função para verificar se usuário existe
+        function userExists(email) {
+            return users.hasOwnProperty(email);
+        }
+
+        // Função para verificar senha
+        function checkPassword(email, password) {
+            return users[email] && users[email].password === password;
+        }
+
+        // Função para atualizar último login
+        function updateLastLogin(email) {
+            if (users[email]) {
+                users[email].lastLogin = new Date().toISOString();
+                localStorage.setItem('googleUsers', JSON.stringify(users));
+            }
+        }
+
+        // Função para fazer login com sucesso
+        function loginSuccess(email) {
+            updateLastLogin(email);
+            showSuccess(passwordSuccess, 'Login realizado com sucesso!');
+            
+            // Simular redirecionamento após 2 segundos
+            setTimeout(() => {
+                alert(`Bem-vindo! Você está logado como: ${email}\n\nDados salvos no localStorage:\n${JSON.stringify(users[email], null, 2)}`);
+                // Aqui você pode redirecionar para outra página
+                // window.location.href = 'dashboard.html';
+            }, 2000);
+        }
+
+        // Event listener para o formulário de email
+        emailForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = emailInput.value.trim();
+            
+            // Validar email
+            if (!email) {
+                showError(emailError, 'Digite um e-mail ou número de telefone');
+                return;
+            }
+            
+            if (!isValidEmail(email)) {
+                showError(emailError, 'Digite um e-mail válido');
+                return;
+            }
+            
+            hideError(emailError);
+            
+            // Ir para a etapa de senha
+            goToPasswordStep(email);
+        });
+
+        // Event listener para o formulário de senha
+        passwordForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const password = passwordInput.value;
+            
+            // Validar senha
+            if (!password) {
+                showError(passwordError, 'Digite sua senha');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showError(passwordError, 'A senha deve ter pelo menos 6 caracteres');
+                return;
+            }
+            
+            hideError(passwordError);
+            passwordSuccess.style.display = 'none';
+            
+            // Verificar se usuário existe
+            if (userExists(currentEmail)) {
+                // Usuário existe, verificar senha
+                if (checkPassword(currentEmail, password)) {
+                    // Senha correta
+                    loginSuccess(currentEmail);
+                } else {
+                    // Senha incorreta
+                    showError(passwordError, 'Senha incorreta. Tente novamente.');
+                }
+            } else {
+                // Usuário não existe, criar conta automaticamente
+                saveUser(currentEmail, password);
+                showSuccess(passwordSuccess, 'Conta criada automaticamente! Fazendo login...');
+                
+                setTimeout(() => {
+                    loginSuccess(currentEmail);
+                }, 1500);
+            }
+        });
+
+        // Event listeners para os labels flutuantes
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentNode.querySelector('.input-label').style.transform = 'translateY(-20px) scale(0.75)';
+                this.parentNode.querySelector('.input-label').style.color = '#1a73e8';
+            });
+            
+            input.addEventListener('blur', function() {
+                if (!this.value) {
+                    this.parentNode.querySelector('.input-label').style.transform = 'translateY(0) scale(1)';
+                    this.parentNode.querySelector('.input-label').style.color = '#5f6368';
+                }
+            });
+        });
+
+        // Função para limpar dados (para testes)
+        function clearUserData() {
+            localStorage.removeItem('googleUsers');
+            users = {};
+            alert('Dados de usuários limpos!');
+        }
+
+        // Função para mostrar dados salvos (para testes)
+        function showSavedData() {
+            const savedUsers = JSON.parse(localStorage.getItem('googleUsers')) || {};
+            console.log('Usuários salvos:', savedUsers);
+            alert('Dados salvos (veja o console): ' + JSON.stringify(savedUsers, null, 2));
+        }
+
+        // Adicionar funções de teste ao objeto window para acesso via console
+        window.clearUserData = clearUserData;
+        window.showSavedData = showSavedData;
+        
+        console.log('Protótipo de Login do Google carregado!');
+        console.log('Funções disponíveis:');
+        console.log('- clearUserData(): Limpa todos os dados salvos');
+        console.log('- showSavedData(): Mostra dados salvos no localStorage');
+    </script>
+</body>
+</html>
+
